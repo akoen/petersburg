@@ -35,12 +35,12 @@ nbins = 1000
 
 function plotWinnings(winnings, fee)
     fig = plot(
-        winnings .|> symlog,
+        winnings,
         x=Row.index,
         y=Col.value,
         Geom.hexbin(xbincount=nbins, ybincount=nbins),
         Guide.xlabel("ROUNDS"),
-        Guide.ylabel("CUMULATIVE GAIN/LOSS (SYMLOG)"),
+        Guide.ylabel("CUMULATIVE PAYOUT (SYMLOG)"),
         Guide.xticks(ticks=[0 2500 5000 7500 10000]),
         Guide.yticks(label=false),
         Guide.title(@sprintf("<b>Fee Per Round = %s</b>", fee)),
@@ -49,46 +49,41 @@ function plotWinnings(winnings, fee)
 end
 
 # %% Plot figures
-w2 = calcWinnings(Int(1e4), Int(1e3), 2.0)
-w100 = calcWinnings(Int(1e4), Int(1e3), 100.0)
-wN = calcWinnings(Int(1e4), Int(1e3))
-# draw(PNG("winnings-100.png", 12inch, 8inch, dpi=300), plotWinnings(w100, "100"))
-# draw(PNG("winnings-2.png", 12inch, 8inch, dpi=300), plotWinnings(w2, "2"))
-# draw(PNG("winnings-N.png", 12inch, 8inch, dpi=300), plotWinnings(wN, ""))
-draw(PDF("../../figures/winnings-100.pdf"), plotWinnings(w100, "\$100"))
-draw(PDF("../../figures/winnings-2.pdf"), plotWinnings(w2, "\$2"))
+wN = calcWinnings(Int(1e4), Int(1e3)) .|> symlog
 draw(PDF("../../figures/winnings-N.pdf"), plotWinnings(wN, "log2(10000)+2"))
 
 # %%
-w2 = calcWinnings(Int(1e2), Int(1e1), 2.0)
-df2 = stack(DataFrame(w2, :auto))
-df2[:, :fee] .= 2
-w100 = calcWinnings(Int(1e2), Int(1e1), 100.0)
-df100 = stack(DataFrame(w100, :auto))
-df100[:, :fee] .= 100
-df = vcat(df2,df100)
-fig = plot(
-    df,
-    x=Row.index,
-    y=Col.value,
-    Geom.subplot_grid(Geom.hexbin)
-    ygroup=:fee,
-)
-draw(PDF("tmp.pdf"), fig)
-# %%
-N=50000
-df1 = DataFrame(
-  x1 = rand(Normal(1,3), N),
-  x2 = [sample(["High", "Medium", "Low"],
-              pweights([0.25,0.45,0.30])) for i=1:N],
-    x3 = rand(Normal(2, 6), N
-              )
- )
+df2_wide = DataFrame(w2, :auto)
+cols = names(df2_wide)
+df2_wide.x = 1:(size(df2_wide)[1])
+df2_wide.f .= "P=\$2"
+df2 = stack(df2_wide, cols)
 
-p2 = plot(df1,
-    ygroup =:x2,  x=:x1,  y=:x3,
-    Scale.color_continuous(colormap=Scale.lab_gradient("blue", "white", "orange")),
-    Geom.subplot_grid(Geom.hexbin)
-)
-display(p2)
+
+df100_wide = DataFrame(w100, :auto)
+cols = names(df100_wide)
+df100_wide.x = 1:(size(df100_wide)[1])
+df100_wide.f .= "P=\$100"
+df100 = stack(df100_wide, cols)
+
+df = vcat(df2, df100)
+
 # %%
+p = plot(df,
+         x=:x,
+         y=:value,
+         ygroup=:f,
+         Geom.subplot_grid(Geom.hexbin(xbincount=nbins, ybincount=nbins),
+                           Coord.cartesian(xmin=0, xmax=1e4, ymin=-8, ymax=8),
+                           # Guide.yticks(ticks=nothing), Does not work :(
+                           Guide.xticks(ticks=[0 2500 5000 7500 10000]),
+                           ),
+         Guide.xlabel("ROUNDS"),
+         Guide.ylabel("CUMULATIVE PAYOUT (SYMLOG)"),
+         Guide.title("<b>Distribution of Payouts over Time</b>"))
+
+
+draw(PDF("../../figures/winnings-2-100.pdf"), p)
+# %%
+
+Guide.yticks

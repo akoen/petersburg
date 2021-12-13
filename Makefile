@@ -17,7 +17,7 @@ tex/include/lotto.tex
 TEXDEPS = $(figs) $(texs)
 
 pdf: $(TEXDEPS)
-	$(LATEXMK) -jobname=build/$(NAME) tex/$(NAME).tex
+	$(LATEXMK) -jobname=build/$(NAME) $(NAME).tex
 	cp build/$(NAME).pdf $(NAME).pdf
 
 figures/%.$(FIGEXT): src/figures/%.py
@@ -27,7 +27,7 @@ tex/include/%.tex: src/tex/%.jl
 	julia $< $@
 
 continuous:
-	$(LATEXMK) -pvc -jobname=build/$(NAME) tex/$(NAME).tex
+	$(LATEXMK) -pvc -jobname=build/$(NAME) $(NAME).tex
 
 clean:
 	rm -rf data/*
