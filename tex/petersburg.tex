@@ -160,18 +160,18 @@ This approach was first proposed by \textcite{Steinhaus1949}.
 
 Notice that this represents exactly expected payouts of the St. Petersburg Game. Picking randomly from elements in the sequence will produce 2 half the time, 4 one-quarter of the time, 8 one-eight of the time, and so forth.
 
-One can therefore reformulate the paradox as a random draw
+One can therefore reformulate the paradox as a random draw from the above sequence.
 
-
-
-When the per-round fee is set to $\log_2N+2$, where $N$ is the total number of rounds played, wealth is asymptotically stable as shown in Figure \ref{fig:evolution-fair}. Note that on most rounds the player will lose money, but this is offset by the occasional large payout from the house.
+When the per-round fee is set to $\log_2N+2$, where $N$ is the total number of rounds played, wealth is asymptotically stable as shown in Figure~\ref{fig:evolution-fair}. Note that on most rounds the player will lose money, but this is offset by the occasional large payout from the house.
 
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\textwidth]{winnings-N}
-    \caption{Evolution of gain/loss over 10,000 round with a per-round fee of $\log_2(10000)+2$. As expected, with this fee wealth is asymptotically stable.}
-    \label{fig:evolution-fair}
-  \end{figure}
+  \caption{Evolution of gain/loss over 10,000 round with a per-round fee of $\log_2(10000)+2$. As expected, with this fee wealth is asymptotically stable.}
+  \label{fig:evolution-fair}
+\end{figure}
+
+\section{Conclusion}
 
 \clearpage
 \printbibliography
