@@ -20,10 +20,21 @@ end
 
 @time winnings = computeWinnings(population)
 
-table = mat2latex([1:length(winnings) winnings])
 
 
 # %%
-writedlm("world.csv", winnings)
+writedlm("../../data/world.csv", winnings)
 write(ARGS[1], table)
+
+# %% Write to table
+function commas(num::Integer)
+    str = string(num)
+    return replace(str, r"(?<=[0-9])(?=(?:[0-9]{3})+(?![0-9]))" => ",")
+end
+
+data = readdlm("../../data/world.csv") |> vec .|> x -> round(x, sigdigits=3) .|> Int64 .|> commas
+payout = 1:length(data) .|> x -> 2^x .|> x -> round(x, sigdigits=3) .|> Int64 .|> commas
+# %%
+table = mat2latex([payout[1:34] data[1:34]])
+write("../../tex/world.tex", table)
 # %%

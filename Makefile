@@ -4,7 +4,7 @@
 NAME = petersburg
 
 FIGEXT = png
-LATEXMK = latexmk -pdf -interaction=nonstopmode -pdflatex=lualatex
+LATEXMK = latexmk -pdf -interaction=nonstopmode
 
 figs = \
 figures/distribution.$(FIGEXT) \
